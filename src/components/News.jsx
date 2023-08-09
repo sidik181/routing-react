@@ -1,99 +1,65 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import SearchForm from './SearchForm'
+import Loading from './Loading'
+import Error from './Error'
 import Card from './Card'
 
 const apiKey = 'e691691c1281499c9a5dd08b418c94c2'
 
-export default class News extends Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			news: [],
-			loading: true,
-			error: false,
-		};
-		
-		this.fetchNewsWithSearch = this.fetchNewsWithSearch.bind(this)
-	}
+function News() {
+	const [news, setNews] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState(null);
 
-	componentDidMount() {
-		this.fetchNews()
-	}
-
-	fetchNews() {
-		const apiUrl = `https://newsapi.org/v2/top-headlines?country=id&apiKey=${apiKey}`;
-
-		axios.get(apiUrl)
-			.then(response => {
-				this.setState({
-					news: response.data.articles,
-					loading: false,
-					error: null,
-				});
-			})
-			.catch(error => {
-				this.setState({
-					news: [],
-					loading: false,
-					error: 'Gagal mengambil data berita'
-				})
-			})
-	}
-
-	async fetchNewsWithSearch(searchText) {
-		const searchUrl = `https://newsapi.org/v2/everything?q=${searchText}&apiKey=${apiKey}`;
-
-		await axios.get(searchUrl)
-			.then(response => {
-				this.setState({
-					news: response?.data?.articles,
-					loading: false,
-					error: null,
-				});
-			})
-		.catch(error => {
-			this.setState({
-			  news: [],
-			  loading: false,
-			  error: 'Gagal mengambil data berita',
-			});
-		});
-	}
-
-	render() {
-		const { news, loading, error } = this.state;
-
-		if (loading) {
-			return (
-				<div className='mt-5'>
-					<h2 className='header-title'>Latest News</h2>
-					<p>Loading...</p>
-				</div>
-			)
+	const fetchNews = () => {
+		const apiUrl = `https://newsapi.org/v2/top-headlines?country=id&apiKey=${apiKey}`
+		try {
+			const res = axios.get(apiUrl)
+			setNews(res.data.articles)
+			setIsLoading(false)
+			setError(null)
+		} catch (error) {
+			setNews([])
+			setIsLoading(false)
+			setError('Gagal mengambil data berita')
 		}
+	}
 
-		if (error) {
-			return (
-				<div className='mt-3'>
-					<h2 className='header-title'>Latest News</h2>
-					<p className='--bs-danger'>{error}</p>
-				</div>
-			)
+	const fetchNewsWithSearch = async (searchText) => {
+		const searchUrl = `https://newsapi.org/v2/everything?q=${searchText}&apiKey=${apiKey}`
+
+		try {
+			const res = axios.get(searchUrl)
+			setNews(res.data.articles)
+			setIsLoading(false)
+			setError(null)
+		} catch (error) {
+			setNews([])
+			setIsLoading(false)
+			setError('Gagal mengambil data berita:', error)
 		}
+	}
 
-		return (
-			<div className=''>
-				<SearchForm onSearch={this.fetchNewsWithSearch} />
-				<h2 className='header-title mt-3'>Latest News</h2>
-				<div className='row'>
-					{news.map((news, index) => (
-						<div className='col-3 mb-3 mt-2'>
-							<Card key={index} news={news} />
-						</div>
-					))}
-				</div>
+	useEffect(() => {
+		fetchNews()
+	}, [])
+
+	return (
+		<div className=''>
+			<SearchForm onSearch={fetchNewsWithSearch()} />
+			<h2 className='header-title mt-3'>Latest News</h2>
+			<div className='row'>
+				{isLoading && <Loading />}
+				{error && <Error />}
+				{news.map((news, index) => (
+					<div className='col-3 mb-3 mt-2'>
+						<Card key={index} news={news} />
+					</div>
+				))}
 			</div>
-		)
-	}
+		</div>
+	)
 }
+
+export default News
