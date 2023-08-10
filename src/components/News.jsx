@@ -12,10 +12,11 @@ function News() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState(null);
 
-	const fetchNews = () => {
+	const fetchNews = async () => {
 		const apiUrl = `https://newsapi.org/v2/top-headlines?country=id&apiKey=${apiKey}`
 		try {
-			const res = axios.get(apiUrl)
+			const res = await axios.get(apiUrl)
+			console.log(res)
 			setNews(res.data.articles)
 			setIsLoading(false)
 			setError(null)
@@ -30,7 +31,7 @@ function News() {
 		const searchUrl = `https://newsapi.org/v2/everything?q=${searchText}&apiKey=${apiKey}`
 
 		try {
-			const res = axios.get(searchUrl)
+			const res = await axios.get(searchUrl)
 			setNews(res.data.articles)
 			setIsLoading(false)
 			setError(null)
@@ -47,7 +48,7 @@ function News() {
 
 	return (
 		<div className=''>
-			<SearchForm onSearch={fetchNewsWithSearch()} />
+			<SearchForm onSearch={fetchNewsWithSearch} />
 			<h2 className='header-title mt-3'>Latest News</h2>
 			<div className='row'>
 				{isLoading && <Loading />}
