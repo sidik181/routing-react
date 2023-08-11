@@ -16,7 +16,6 @@ function News() {
 		const apiUrl = `https://newsapi.org/v2/top-headlines?country=id&apiKey=${apiKey}`
 		try {
 			const res = await axios.get(apiUrl)
-			console.log(res)
 			setNews(res.data.articles)
 			setIsLoading(false)
 			setError(null)
@@ -47,7 +46,7 @@ function News() {
 	}, [])
 
 	return (
-		<div className=''>
+		<>
 			<SearchForm onSearch={fetchNewsWithSearch} />
 			<h2 className='header-title mt-3'>Latest News</h2>
 			<div className='row'>
@@ -59,7 +58,7 @@ function News() {
 					</div>
 				))}
 			</div>
-		</div>
+		</>
 	)
 }
 

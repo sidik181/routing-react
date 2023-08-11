@@ -1,14 +1,14 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
-import News from '../components/News'
+import FormRegister from '../components/FormRegister'
 
-function Home() {
+function Register() {
 	return (
 		<div className="container">
 			<Navbar />
-			<News />
+			<FormRegister />
 		</div>
 	)
 }
 
-export default Home;
+export default Register

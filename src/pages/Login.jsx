@@ -1,14 +1,14 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
-import News from '../components/News'
+import FormLogin from '../components/FormLogin'
 
-function Home() {
+function Login() {
 	return (
 		<div className="container">
 			<Navbar />
-			<News />
+			<FormLogin />
 		</div>
 	)
 }
 
-export default Home;
+export default Login
